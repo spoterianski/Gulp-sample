@@ -10,7 +10,14 @@ var lr = require('tiny-lr'), // Минивебсервер для livereload
     concat = require('gulp-concat'), // Склейка файлов
     connect = require('connect'), // Webserver
     server = lr(),
-    shell = require('gulp-shell');
+    shell = require('gulp-shell'),
+    coffee = require('gulp-coffee');
+
+gulp.task('coffee', function() {
+  gulp.src('./assets/js/*.coffee')
+    .pipe(coffee({bare: true}).on('error', gutil.log))
+    .pipe(gulp.dest('./build/js/'));
+});
 
 // Stylus build
 gulp.task('stylus', function() {
