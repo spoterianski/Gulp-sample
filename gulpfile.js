@@ -9,7 +9,8 @@ var lr = require('tiny-lr'), // Минивебсервер для livereload
     uglify = require('gulp-uglify'), // Минификация JS
     concat = require('gulp-concat'), // Склейка файлов
     connect = require('connect'), // Webserver
-    server = lr();
+    server = lr(),
+    shell = require('gulp-shell');
 
 // Stylus build
 gulp.task('stylus', function() {
@@ -90,7 +91,7 @@ gulp.task('watch', function() {
 // BUILD
 gulp.task('build', function() {
     // css
-    return run('stylus assets/stylus --out build/css').exec();
+    shell.task(['stylus assets/stylus --out build/css']);
 
     // jade
     gulp.src(['./assets/template/*.jade', '!./assets/template/_*.jade'])
