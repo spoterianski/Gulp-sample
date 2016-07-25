@@ -1,12 +1,12 @@
-var gulp = require('gulp'), // Сообственно Gulp JS
-    jade = require('gulp-jade'), // Плагин для Jade
-    stylus = require('gulp-stylus'), // Плагин для Stylus
-    livereload = require('gulp-livereload'), // Livereload для Gulp
-    myth = require('gulp-myth'), // Плагин для Myth - http://www.myth.io/
-    csso = require('gulp-csso'), // Минификация CSS
-    imagemin = require('gulp-imagemin'), // Минификация изображений
-    uglify = require('gulp-uglify'), // Минификация JS
-    concat = require('gulp-concat'), // Склейка файлов
+var gulp = require('gulp'),
+    jade = require('gulp-jade'),
+    stylus = require('gulp-stylus'),
+    livereload = require('gulp-livereload'),
+    myth = require('gulp-myth'),
+    csso = require('gulp-csso'),
+    imagemin = require('gulp-imagemin'),
+    uglify = require('gulp-uglify'),
+    concat = require('gulp-concat'),
     gutil = require('gulp-util'),
     shell = require('gulp-shell'),
     exec = require('child_process').exec,
@@ -14,16 +14,16 @@ var gulp = require('gulp'), // Сообственно Gulp JS
     run = require('gulp-run'),
     coffee = require('gulp-coffee');
 
-// Build JS from Coffee
+// Compile Coffee - to - JS
 gulp.task('coffee', function() {
-    gulp.src('./assets/js/*.coffee')
-      .pipe(plumber())
-      .pipe(coffee({bare: true}).on('error', gutil.log))
-      .pipe(gulp.dest('./public/js/'))
-      .pipe(livereload());
+  gulp.src('./assets/js/*.coffee')
+    .pipe(plumber())
+    .pipe(coffee({bare: true}).on('error', gutil.log))
+    .pipe(gulp.dest('./public/js/'))
+    .pipe(livereload());
 });
 
-// Build CSS from Stylus
+// Compile Stylus - to - CSS
 gulp.task('styl', function() {
   gulp.src('./assets/stylus/*.styl')
     .pipe(plumber())
@@ -32,29 +32,29 @@ gulp.task('styl', function() {
     .pipe(livereload());
 });
 
-// Build HTML from Jade
+// Compile Jade - to - html
 gulp.task('jade', function() {
-    gulp.src(['./assets/template/*.jade', '!./assets/template/_*.jade'])
+  gulp.src(['./assets/template/*.jade', '!./assets/template/_*.jade'])
     .pipe(plumber())
     .pipe(jade({
       pretty: true
-    }))  // Собираем Jade только в папке ./assets/template/ исключая файлы с _*
-    .pipe(gulp.dest('./public/')) // Записываем собранные файлы
-    .pipe(livereload()); // даем команду на перезагрузку страницы
+    }))
+    .pipe(gulp.dest('./public/'))
+    .pipe(livereload());
 });
 
 // Copy and minimize images
 gulp.task('images', function() {
-    gulp.src('./assets/img/**/*')
-      .pipe(imagemin())
-      .pipe(gulp.dest('./public/img'));
+  gulp.src('./assets/img/**/*')
+    .pipe(imagemin())
+    .pipe(gulp.dest('./public/img'));
 });
 
 /*
   WATCH Tasks :
-         | Watch -> Coffee
-         | Watch -> Stylus
-         | Watch -> Jade
+       | Watch -> Coffee :: assetss/js/*.coffeee
+       | Watch -> Stylus :: assets/stylus/*.styl
+       | Watch -> Jade :: assets/template/*.jade
 */
 gulp.task('watch', function(){
   var server = livereload({ start:true });
@@ -64,35 +64,34 @@ gulp.task('watch', function(){
   livereload();
 });
 
-
-// BUILD
-gulp.task('build', function() {
-    // css
-    gulp.src('./public/css/**/*.css')
-        .pipe(csso({
-            restructure: false,
-            sourceMap: true,
-            debug: true
-        }))
-        .pipe(gulp.dest('./build/css/'));
-
-    // jade
-    gulp.src(['./assets/template/*.jade', '!./assets/template/_*.jade'])
-        .pipe(jade())
-        .pipe(gulp.dest('./build/'));
-
-    // js
-    gulp.src(['./public/js/**/*.js', '!./public/js/lib/**/*.js'])
-        .pipe(concat('main.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('./build/js'));
-
-    // image
-    gulp.src('./assets/img/**/*')
-        .pipe(imagemin())
-        .pipe(gulp.dest('./build/img'))
-        .pipe(gulp.dest('./public/img'));
-
-});
-
+// DEFAULT Task --- running on : gulp :: command
 gulp.task('default', ['coffee', 'styl', 'jade', 'images', 'watch']);
+
+// BUILD Task --- running on : gulp build :: command
+gulp.task('build', function() {
+  // js
+  gulp.src(['./public/js/**/*.js', '!./public/js/lib/**/*.js'])
+    .pipe(concat('main.js'))
+    .pipe(uglify())
+    .pipe(gulp.dest('./build/js'));
+
+  // css
+  gulp.src('./public/css/**/*.css')
+    .pipe(csso({
+        restructure: false,
+        sourceMap: true,
+        debug: true
+    }))
+    .pipe(gulp.dest('./build/css/'));
+
+  // html
+  gulp.src(['./assets/template/*.jade', '!./assets/template/_*.jade'])
+    .pipe(jade())
+    .pipe(gulp.dest('./build/'));
+
+  // image
+  gulp.src('./assets/img/**/*')
+    .pipe(imagemin())
+    .pipe(gulp.dest('./build/img'))
+    .pipe(gulp.dest('./public/img'));
+});
