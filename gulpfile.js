@@ -90,7 +90,8 @@ gulp.task('build', function() {
     // image
     gulp.src('./assets/img/**/*')
         .pipe(imagemin())
-        .pipe(gulp.dest('./build/img'));
+        .pipe(gulp.dest('./build/img'))
+        .pipe(gulp.dest('./public/img'));
 
 });
 
