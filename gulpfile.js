@@ -25,13 +25,12 @@ gulp.task('coffee', function() {
 
 // Build CSS from Stylus
 gulp.task('styl', function() {
-  run('stylus assets/stylus --out public/css').exec()
-  .pipe(gulp.src('./public/css/*.css').pipe(plumber()).pipe(livereload()));
+  gulp.src('./assets/stylus/*.styl')
+    .pipe(plumber())
+    .pipe(stylus())
+    .pipe(gulp.dest('./public/css/'))
+    .pipe(livereload());
 });
-gulp.task('stylreload', function() {
-  gulp.src('./public/css/*.css').pipe(plumber()).pipe(livereload());
-});
-
 
 // Build HTML from Jade
 gulp.task('jade', function() {
@@ -60,11 +59,9 @@ gulp.task('images', function() {
 gulp.task('watch', function(){
   var server = livereload({ start:true });
   gulp.watch('./assets/js/*.coffee', ['coffee']);
-  gulp.watch('./assets/stylus/*.styl', function(){
-    gulp.run('styl');
-    gulp.src('./public/css/*.css').pipe(plumber()).pipe(livereload());
-  });
+  gulp.watch('./assets/stylus/*.styl', ['styl']);
   gulp.watch(['./assets/template/*.jade', '!./assets/template/_*.jade'], ['jade']);
+  livereload();
 });
 
 
