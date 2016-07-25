@@ -47,7 +47,7 @@ gulp.task('jade', function() {
 gulp.task('images', function() {
     gulp.src('./assets/img/**/*')
       .pipe(imagemin())
-      .pipe(gulp.dest('./public/img'))
+      .pipe(gulp.dest('./public/img'));
 });
 
 /*
@@ -68,23 +68,29 @@ gulp.task('watch', function(){
 // BUILD
 gulp.task('build', function() {
     // css
-    shell.task(['stylus assets/stylus --out build/css']);
+    gulp.src('./public/css/**/*.css')
+        .pipe(csso({
+            restructure: false,
+            sourceMap: true,
+            debug: true
+        }))
+        .pipe(gulp.dest('./build/css/'));
 
     // jade
     gulp.src(['./assets/template/*.jade', '!./assets/template/_*.jade'])
         .pipe(jade())
-        .pipe(gulp.dest('./build/'))
+        .pipe(gulp.dest('./build/'));
 
     // js
-    gulp.src(['./assets/js/**/*.js', '!./assets/js/vendor/**/*.js'])
-        .pipe(concat('index.js'))
+    gulp.src(['./public/js/**/*.js', '!./public/js/lib/**/*.js'])
+        .pipe(concat('main.js'))
         .pipe(uglify())
         .pipe(gulp.dest('./build/js'));
 
     // image
     gulp.src('./assets/img/**/*')
         .pipe(imagemin())
-        .pipe(gulp.dest('./build/img'))
+        .pipe(gulp.dest('./build/img'));
 
 });
 
